@@ -1,3 +1,12 @@
+
+-------------
+**THE DOCUMENT IN THIS LOCATION IS NO LONGER UPDATED. FOR LATEST INFORMATION REFER TO THE VERSION ON THE GITHUB PAGE OF THE PLUGIN.**
+
+https://github.com/volumio/volumio-plugins-sources/blob/master/rotaryencoder2/readme.md
+
+-------------
+
+
 ## Potential future extensions
 - add the other parameters offered by the dtoverlay (e.g. absolute positioning, binary instead of Gray-code etc.)
 - Add support for more than 3 encoders

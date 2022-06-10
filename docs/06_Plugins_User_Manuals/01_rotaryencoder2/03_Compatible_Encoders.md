@@ -1,3 +1,12 @@
+
+-------------
+**THE DOCUMENT IN THIS LOCATION IS NO LONGER UPDATED. FOR LATEST INFORMATION REFER TO THE VERSION ON THE GITHUB PAGE OF THE PLUGIN.**
+
+https://github.com/volumio/volumio-plugins-sources/blob/master/rotaryencoder2/readme.md
+
+-------------
+
+
 ## List of compatible Rotary Encoders
 The list currently lists only the ALPS Encoder I used for my project. I am convinced, that it works with others as well. I found some other projects using dtoverlay that use KY040 for example or other ALPS types.   
 **_Please add yours to the list to help others. If you do not know how to edit this file in Github, create an issue with the information and I will integrate it someday._**

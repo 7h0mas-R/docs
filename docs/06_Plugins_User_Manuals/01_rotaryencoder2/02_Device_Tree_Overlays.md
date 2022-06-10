@@ -1,3 +1,12 @@
+
+-------------
+**THE DOCUMENT IN THIS LOCATION IS NO LONGER UPDATED. FOR LATEST INFORMATION REFER TO THE VERSION ON THE GITHUB PAGE OF THE PLUGIN.**
+
+https://github.com/volumio/volumio-plugins-sources/blob/master/rotaryencoder2/readme.md
+
+-------------
+
+
 ## Linux Device Tree Overlay: Rotary Encoder
 Even with a perfect signal from RC-filter and  Schmitt-trigger, there were still missed ticks sometimes. I could solve that by moving to the DT overlay driver for rotary encoders.     
 

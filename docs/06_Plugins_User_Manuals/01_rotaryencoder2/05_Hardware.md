@@ -1,9 +1,18 @@
-# Some Basics about Hardware Design
+
+-------------
+**THE DOCUMENT IN THIS LOCATION IS NO LONGER UPDATED. FOR LATEST INFORMATION REFER TO THE VERSION ON THE GITHUB PAGE OF THE PLUGIN.**
+
+https://github.com/volumio/volumio-plugins-sources/blob/master/rotaryencoder2/readme.md
+
+-------------
+
+
+## Some Basics about Hardware Design
 This page is for those users, who do not have experience with electronics but are still enthusiastic to play with their Raspi and Volumio to realize their own project.
 
 I do not claim, that this is the ultimate guide, but many of the problems reported by people on the forums seem to come from basic mistakes in the hardware setup. So here come some tipps for a robust design.
 
-## Raspberry Pi Do's and Dont's
+### Raspberry Pi Do's and Dont's
 * GPIO pins are specified for 3.3V (3V3), do not connect them to higher voltages even if a YouTuber or a DIY web-page tells you that it can withstand it. You are operating outside the specification and misuse the ESD protection. Overvoltage should stay a rare 'event', not become a continuous state. 
 * Even if you only connect 3.3V, higher spikes are possible, due to electro-static discharge (ESD), capacitive and inductive components (like long cables). Take care of ESD, use a limiting resistor and a capacitor to control the slew (how fast the voltage on the pad changes). Do not use unneccessarily long cables, connect GND before connecting any signal...
 * Never short a power output directly to ground, your Pi *may* survive, but it may also die. You are operating beyond the AMR values (absolute max ratings), where Powers beyond the engineers influence are at work - the danger zone.
@@ -13,7 +22,7 @@ The image below shows quite a safe external wiring schematic for an RPi GPIO, th
 ![Safe wiring of a Raspberry Pi GPIO](./img/PU_PD.jpg)
 *The left schematic shows a GPIO with a Pull-up resistor R_PU, a limiting resistor R_lim and a decoupling capacitor C. The right hand side has the same schematic but with a Pull-Down resistor instead.*
 
-## What is a Pull-Up or Pull-Down Resistor and why do I need it?
+### What is a Pull-Up or Pull-Down Resistor and why do I need it?
 A digital input pin that is not connected to any defined reference potential is isolated from its surroundings. It can have any electric potential, meaning that its voltage compared to GND can have all kinds of values, depending on the charge it carries and potentially changing with electromagnetic fields in its vicinity. 
 
 It is called a 'floating' pin. And since it is something like a tiny capacitor or even worse, a tiny antenna, depending on its charge, it may be in the logical HIGH state (>1.6V for a RPi input), but also in the logical LOW state (<0.9V) - or anywhere in between.
@@ -24,7 +33,7 @@ This is overcome, by connecting it to either HIGH (3.3V) or LOW (0V) potential v
 
 The Raspberry Pi has integrated Pull-up and Pull-down resistors inside its microprocessor chip, which can be activated by the system at boot time. But it is also possible to connect external resistors to the pin (and there are reasons to do so). [See below](#why-does-it-matter-for-playing-with-my-raspberry-pi).
 
-## What is a limiting resistor?
+### What is a limiting resistor?
 A limiting resistor is connected to the GPIO pin in such a way, that all current into or out of the pin has to pass the resistor. The limiting resistor will determine the maximum current out of the pin.
 When configured as output, the pin has minimum current values that it can safely drive, to give a well-defined HIGH and LOW state, called I_OH and I_OL. Anything larger than that is not guaranteed and you should design to stay below it.
 
@@ -35,15 +44,15 @@ The same thing happens, if the pad is connected to 3.3V and you configure it as 
 1kOhm will limit the current to 3.3V/1kOhm = 3.3mA, which should be low enough, to get the high level at 2.6V or higher and the LOW level at 0.4V or lower, since both are specified at 4mA drive strength. So even an accidental setting as output will never damage your pin. 2kOhm may even be a better choice, since the Pi can supply only 3mA on all pins simultaneously.
 See the [Raspberry Pi Documentation for details](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#voltage-specifications).
 
-## What is the capacitor good for?
+### What is the capacitor good for?
 The capacitor between the GPIO and ground will smooth things out - it will attenuate mechanically induced bounce and ringing from the line and will reduce high frequency noise. Thus it will help protect your input and make the signal more stable. It will also generate less interrupts at the GPIO, because the smoothing out of high-frequency noise will reduce the edges, that the microprocessor needs to react on.
 Together with the resistors is forms an RC-filter. You can either use *C=100nF* as a rule of thumb or calculate the proper value based on your button bounce specification as shown in the [Debouncing section](./01_Debouncing.md).
 
-## Do I need all those three elements?
+### Do I need all those three elements?
 Well, yes and no. It depends on your use of the system. As explained, using all three of them adds some safety and protection to your GPIO. It makes damaging it more unlikely. 
 However, you can leave out the pull-resistor and use the internal ones and you can leave out the limiting resistor, if you make sure the input is never accidentally reconfigured the wrong way. You can also leave away the capacitor - but without the three cheap components, the system has a less robust design and leaves more responsibility with the user and the programmer.
 
-# How does it work with a Rotary Encoder and the RPi?
+### How does it work with a Rotary Encoder and the RPi?
 A modern GPIO (General Purpose Input/Output) in a microprocessor typically has plenty of configurable properties. It can be an input or an output or in a High-Impedance (high-Z) state. The input can be floating, have a pull up or a pull down. The output sometimes has configurable drive strength etc.
 
 To connect buttons and rotary encoders (which are actually kind of buttons) we typically use the GPIOs as inputs. Many GPIOs are already configured as inputs for Volumio and may have either have the built-in pull-up (PU) or pull-down (PD) resistors enabled. The internal pull-resistors of the RPi [are around 50-65kOhms](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#voltage-specifications).
@@ -55,7 +64,7 @@ With the right external components, it does not matter too much, how the inputs 
 *Simplified schematic of the internal wiring of a GPIO pin. Output functionality is not shown for simplicity. The input pin (GPIO) is internally connected to GND and and 3.3V via two protective diodes, for Overvoltage and ESD protection. The input itself is then connected to a Schmitt-Trigger, that has a high-impedance input. To prevent the input from floating, it can be either wired to 3.3V via the PU or to GND via the PD. Instead of a switch, the internal Pulls are activated via CMOS devices.
 It is also possible, to deactivate both - the GPIO will have high impedance and may float if not externally pulled.*
 
-## Is it a problem if I use internal and external Pull-resistors at the same time?
+### Is it a problem if I use internal and external Pull-resistors at the same time?
 Even if the interal PU or PD is set, you can still connect an external PU or PD. Just be aware, that the values need to match each other.
 
 ![GPIO with internal PU and external PD](./img/extPD_intPU.jpg)
@@ -78,7 +87,7 @@ What happens if you activate internal PU and connect an external PD?
 If the internal PU is configured and you connect an external PU on top, there will not be a lot of changes, since you basically just add a parallel resistor to the internal one *1/R_total = 1/(R_int + R_lim) + 1/R_ext)*. That will increase the current flowing, but not to a critical level.
 The voltage at the Schmitt-Trigger input will be determined by the voltage devider formed by internal PU and R_lim.
 
-## How to determine the default configuration of your GPIOs?
+### How to determine the default configuration of your GPIOs?
 * By default, GPIO BCM2...8 should be pulled high at boot and GPIO BCM9...27  pulled-low.
 * On Raspberry Pi 4, you can issue `raspi-gpio get` to read the current setting of the GPIO pins
 * On older versions of the Pi, this is not available and there is no simple method to determine the state
@@ -137,7 +146,7 @@ As you can see from the table, my GPIOs with BCM2...8 are '1' as expected, but B
 
 If you connect a DAC like e.g. HifiBerry to the Pin-Header, it will reserve some pins for various functions. Those pins cannot be used for any other purpose. Check in the documentation of the HAT or try to figure out by running `gpio readall` with the HAT connected and the driver loaded.
 
-## How to wire a rotary encoder
+### How to wire a rotary encoder
 Since many people report problems with wiring their rotary encoder, I'll show an example for clean wiring to your Raspberry Pi. This is not the minimal solution and you can do it with less components, but if you play with your Raspberry, it will add some safety to your schematic.
 
 ![Rotary encoder with push button wired to RPi.](./img/rotary%20with%20r%20and%20c.jpg)
